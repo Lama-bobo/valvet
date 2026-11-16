@@ -66,7 +66,7 @@ class AnaqaApp extends StatelessWidget {
       builder: (context, _) {
         Responsive.capScale(context);
         return GetMaterialApp(
-          title: 'متجر الاناقة',
+          title: 'Velvet',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.build(Get.find<AppGetxController>().primary.value),
           locale: const Locale('ar'),

@@ -6,7 +6,6 @@ import 'package:souqna_anaqa/getx_controller/app_getx_controller.dart';
 import 'package:souqna_anaqa/getx_controller/user_profile_getx_controller.dart';
 import 'package:souqna_anaqa/screen/bottom_nav_bar/main_screen.dart';
 import 'package:souqna_anaqa/utils/app_colors.dart';
-import 'package:souqna_anaqa/widget/net_image.dart';
 
 /// شاشة البداية: تحمّل هوية المتجر (الاسم، الشعار، اللون) ثم تنتقل للرئيسية.
 class LunchScreen extends StatefulWidget {
@@ -17,6 +16,10 @@ class LunchScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<LunchScreen> {
+  /// أقل مدة حتى لا يومض الشعار، وأقصى مدة قبل فتح الرئيسية مهما تأخر الخادم.
+  static const _minDuration = Duration(milliseconds: 1400);
+  static const _maxDuration = Duration(seconds: 3);
+
   String? _error;
 
   @override
@@ -28,11 +31,15 @@ class _SplashScreenState extends State<LunchScreen> {
   Future<void> _start() async {
     setState(() => _error = null);
     final app = Get.find<AppGetxController>();
+    // الحساب محفوظ على الجهاز؛ تحديثه من الخادم يكمل بالخلفية بدون انتظار.
+    Get.find<UserProfileGetxController>().fetchUserProfile();
     final results = await Future.wait([
-      app.fetchStore(),
-      Get.find<UserProfileGetxController>().fetchUserProfile(),
-      Future.delayed(const Duration(milliseconds: 1400)),
+      // إذا تأخر الخادم نفتح الرئيسية والطلب يكمل بالخلفية:
+      // اسم المتجر وشعاره ولونه تتحدّث تلقائيًا (Obx) عند وصولها.
+      app.fetchStore().timeout(_maxDuration, onTimeout: () => true),
+      Future.delayed(_minDuration),
     ]);
+    if (!mounted) return;
     if (results.first == true) {
       Get.offAll(() => const MainScreen(), transition: Transition.fadeIn);
     } else {
@@ -86,33 +93,14 @@ class _SplashScreenState extends State<LunchScreen> {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: 112.r,
-                                height: 112.r,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: app.primary.value,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: ClipOval(
-                                  child: store?.logo != null
-                                      ? NetImage(store!.logo)
-                                      : Container(
-                                          color: app.primary.value,
-                                          child: const Icon(
-                                            Icons.checkroom_rounded,
-                                            color: Colors.white,
-                                            size: 48,
-                                          ),
-                                        ),
-                                ),
+                              // نفس لوجو أيقونة التطبيق وشاشة الإقلاع الأصلية.
+                              Image.asset(
+                                'assets/splash/splash_logo.png',
+                                height: 120.r,
                               ),
                               const SizedBox(height: 22),
                               Text(
-                                store?.name ?? 'متجر الاناقة',
+                                store?.name ?? 'Velvet',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,

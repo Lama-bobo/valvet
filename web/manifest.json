@@ -1,11 +1,11 @@
 {
-    "name": "متجر الاناقة",
-    "short_name": "الاناقة",
+    "name": "Velvet",
+    "short_name": "Velvet",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#FAF8F5",
+    "background_color": "#0F1222",
     "theme_color": "#F59E0B",
-    "description": "متجر الاناقة — تطبيق متجر على منصة سوقنا",
+    "description": "Velvet — تطبيق متجر على منصة سوقنا",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

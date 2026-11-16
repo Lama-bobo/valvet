@@ -56,6 +56,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -63,6 +64,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/splash/splash_logo.png
 
   fonts:
     - family: Plex
@@ -76,10 +80,30 @@ flutter:
         - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
           weight: 700
 
-# أيقونة التطبيق: شعار المتجر من لوحة التحكم.
+# أيقونة التطبيق: مونوغرام V ذهبي على خلفية ink.
 # لإعادة التوليد: dart run flutter_launcher_icons
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: assets/icon/app_icon.png
   remove_alpha_ios: true
+  # أندرويد 8+: الحرف داخل المنطقة الآمنة حتى لا يُقص مع أشكال الأيقونات المختلفة.
+  adaptive_icon_background: "#0F1222"
+  adaptive_icon_foreground: assets/icon/app_icon_foreground.png
+  web:
+    generate: true
+    image_path: assets/icon/app_icon.png
+    background_color: "#0F1222"
+    theme_color: "#F59E0B"
+
+# شاشة الإقلاع الأصلية (قبل تشغيل Flutter): نفس لوجو V على خلفية ink،
+# فتنتقل بسلاسة إلى LunchScreen.
+# لإعادة التوليد: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#0F1222"
+  image: assets/splash/splash_logo.png
+  android_12:
+    color: "#0F1222"
+    image: assets/splash/splash_android12.png
+  web: true
+  fullscreen: false
